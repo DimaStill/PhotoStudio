@@ -5,8 +5,308 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhotoStudio"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="PhotoStudio" Height="450" Width="700" Name="mainWindow">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.07*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0"
+                    Background="#476268">
+            <Button Content="↻" 
+                    Background="#00DDDDDD" 
+                    FontSize="40" 
+                    FontWeight="Bold" 
+                    Foreground="#FF40A798"
+                    Command="{Binding SaveCommand}"/>
+            <Button x:Name="addButton" 
+                Content="+" 
+                    Background="#00DDDDDD" 
+                    FontSize="40" 
+                    FontWeight="Bold" 
+                    Foreground="#FF40A798"
+                    Command="{Binding AddCommand}"/>
+            <Button x:Name="removeButton"
+                    Content="x" 
+                    Background="#00DDDDDD" 
+                    FontSize="40" 
+                    FontWeight="Bold" 
+                    Foreground="#FF40A798"/>
+        </StackPanel>
+        <TabControl x:Name="tabControl" Grid.Column="1" SelectionChanged="TabControl_SelectionChanged">
+            <TabItem IsEnabled="False" Height="55">
+                <TabItem.Header>
+                    <Image Source="pack://application:,,,/Resources/camera.png" Width="50"/>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem x:Name="ordersTabPage" Header="Замовлення" IsSelected="True">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                
+                    <ListBox ItemsSource="{Binding Orders}"
+                             SelectedItem="{Binding SelectedOrder}"
+                             Grid.Column="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock FontSize="18" Text="{Binding StringFormat=ID: {0}, Path=Id}" />
+                                <TextBlock Text="{Binding Path=Date}" />
+                                <TextBlock Text="{Binding Path=Client.Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                    <StackPanel Grid.Column="1" DataContext="{Binding SelectedOrder}">
+                        <TextBlock Text="Вибране замовлення"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Кількість людей"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding AmountPeople, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Кількість фото"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding AmountPhoto, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Дата"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Замовник"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <ComboBox Width="100"
+                                  HorizontalAlignment="Center"
+                                  Margin="10 5"
+                                  ItemsSource="{Binding ElementName=mainWindow, Path=DataContext.Clients}"
+                                  SelectedItem="{Binding Client}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5">
+                                        <TextBlock FontSize="12">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} {1} (ID: {2})">
+                                                    <Binding Path="Surname" />
+                                                    <Binding Path="Name" />
+                                                    <Binding Path="Id" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <TextBlock Text="Обрані послуги"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <ComboBox Width="100"
+                                  HorizontalAlignment="Center"
+                                  Margin="10 5"
+                                  ItemsSource="{Binding ElementName=mainWindow, Path=DataContext.Services}"
+                                  SelectedItem="{Binding Service}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5">
+                                        <TextBlock FontSize="14">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} ({1})">
+                                                    <Binding Path="PhotosessionName" />
+                                                    <Binding Path="Style" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    <!--<DataGrid AutoGenerateColumns="False" x:Name="ordersGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding IdOrders}" Header="Код замовлення"/>
+                        <DataGridTextColumn Binding="{Binding Date}" Header="Дата" Width="75"/>
+                        <DataGridTextColumn Binding="{Binding AmountPhoto}" Header="Кількість фото" />
+                        <DataGridTextColumn Binding="{Binding Price}" Header="Вартість"/>
+                    </DataGrid.Columns>
+                </DataGrid>-->
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="clientsTabPage" Header="Клієнти">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <ListBox ItemsSource="{Binding Clients}"
+                             SelectedItem="{Binding SelectedClient}"
+                             Grid.Column="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="5"
+                                            Name="ClientInfo">
+                                    <TextBlock FontSize="18">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} {1} (ID: {2})">
+                                                <Binding Path="Surname" />
+                                                <Binding Path="Name" />
+                                                <Binding Path="Id" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Path=Gender}" />
+                                    <TextBlock Text="{Binding Path=PhoneNumber}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Column="1" DataContext="{Binding SelectedClient}">
+                        <TextBlock Text="Вибраний клієнт"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Прізвище"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"
+                                   />
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="57,5"
+                                 Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Ім’я"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="По-батькові"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Стать"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Номер телефону"
+                                   Margin="64,5,58,0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding Path=PhoneNumber}"/>
+                        <TextBlock Text="Історія замовлень"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <ComboBox Width="100"
+                                  HorizontalAlignment="Center"
+                                  Margin="10 5"
+                                  ItemsSource="{Binding Path=Orders}" IsReadOnly="True">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5">
+                                        <TextBlock FontSize="14">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="ID: {0} ({1})">
+                                                    <Binding Path="Id" />
+                                                    <Binding Path="Date" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+                <!--<DataGrid AutoGenerateColumns="False" x:Name="clientsGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Ім'я" Width="75"/>
+                        <DataGridTextColumn Binding="{Binding Surname}" Header="Прізвище" Width="100"/>
+                        <DataGridTextColumn Binding="{Binding MiddleName}" Header="По-батькові" Width="100"/>
+                        <DataGridTextColumn Binding="{Binding Gender}" Header="Стать" Width="75"/>
+                        <DataGridTextColumn Binding="{Binding PhoneNumber}" Header="Номер телефону"/>
+                    </DataGrid.Columns>
+                </DataGrid>-->
+            </TabItem>
+            <TabItem x:Name="servicesTabPage" Header="Послуги">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <ListBox ItemsSource="{Binding Services}"
+                             SelectedItem="{Binding SelectedService}"
+                             Grid.Column="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="5">
+                                    <TextBlock FontSize="18" Text="{Binding Path=PhotosessionName}" />
+                                    <TextBlock Text="{Binding StringFormat=Стиль: {0}, Path=Style}" />
+                                    <TextBlock Text="{Binding StringFormat=Кімната: {0}, Path=Room}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Column="1" DataContext="{Binding SelectedService}">
+                        <TextBlock Text="Вибрана послуга"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Назва"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"
+                                   />
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="57,5"
+                                 Text="{Binding PhotosessionName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Стиль фотосесії"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding Style, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Кімната"
+                                   Margin="10 5 5 0"
+                                   HorizontalAlignment="Center"/>
+                        <TextBox Width="100"
+                                 HorizontalAlignment="Center"
+                                 Margin="10 5"
+                                 Text="{Binding Room, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Grid>
+                <!--<DataGrid AutoGenerateColumns="False" x:Name="clientsGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Ім'я" Width="75"/>
+                        <DataGridTextColumn Binding="{Binding Surname}" Header="Прізвище" Width="100"/>
+                        <DataGridTextColumn Binding="{Binding MiddleName}" Header="По-батькові" Width="100"/>
+                        <DataGridTextColumn Binding="{Binding Gender}" Header="Стать" Width="75"/>
+                        <DataGridTextColumn Binding="{Binding PhoneNumber}" Header="Номер телефону"/>
+                    </DataGrid.Columns>
+                </DataGrid>-->
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
